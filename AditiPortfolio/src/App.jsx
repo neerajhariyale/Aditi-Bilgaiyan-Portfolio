@@ -2,12 +2,26 @@ import { useState, useEffect } from 'react'
 import { portfolioData } from './data.js'
 import './App.css'
 import emailjs from '@emailjs/browser'
-import Toast from './components/Toast'
-import InlineMessage from './components/InlineMessage'
-import LoadingSpinner from './components/LoadingSpinner'
 import { EMAILJS_CONFIG, getTemplateParams } from './config/emailjs'
 
-// Navbar Component
+// Shadcn UI Components
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
+// Icons
+import { Menu, Mail, Phone, MapPin, Linkedin, ExternalLink, Send, Download, Sparkles, Briefcase, GraduationCap, Code2, PenTool } from 'lucide-react'
+
+// Toast Component (Custom or Shadcn - staying with usage of custom for now but styled better if possible, or simple alert/custom toast logic present in old App.jsx)
+import Toast from './components/Toast'
+import LoadingSpinner from './components/LoadingSpinner'
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -26,25 +40,56 @@ const Navbar = () => {
     }
   }
 
+  const navItems = ['Home', 'Education', 'Experience', 'Projects', 'Skills', 'Contact']
+
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'
-    }`}>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-transparent ${isScrolled ? 'bg-white/80 backdrop-blur-md shadow-sm border-gray-100' : 'bg-transparent'
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <div className="text-2xl font-bold text-gray-800">
+          <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             {portfolioData.personalInfo.name}
           </div>
-          <div className="hidden md:flex space-x-8">
-            {['Home', 'Education', 'Experience', 'Projects', 'Skills', 'Contact'].map((item) => (
-              <button
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex space-x-1">
+            {navItems.map((item) => (
+              <Button
                 key={item}
+                variant="ghost"
                 onClick={() => scrollToSection(item.toLowerCase())}
-                className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium"
+                className="text-gray-600 hover:text-blue-600 hover:bg-blue-50 font-medium"
               >
                 {item}
-              </button>
+              </Button>
             ))}
+          </div>
+
+          {/* Mobile Nav */}
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <div className="flex flex-col space-y-4 mt-8">
+                  {navItems.map((item) => (
+                    <Button
+                      key={item}
+                      variant="ghost"
+                      onClick={() => {
+                        scrollToSection(item.toLowerCase())
+                      }}
+                      className="w-full justify-start text-lg"
+                    >
+                      {item}
+                    </Button>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
@@ -52,61 +97,68 @@ const Navbar = () => {
   )
 }
 
-// Hero Section Component
 const HeroSection = () => {
-  const [currentTitle, setCurrentTitle] = useState(0)
-  const titles = ['UI/UX Designer', 'Graphic Designer']
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTitle((prev) => (prev + 1) % titles.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
+  const { name, title, about, image, linkedin } = portfolioData.personalInfo;
 
   return (
-    <section id="home" className="min-h-screen flex items-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <section id="home" className="min-h-screen pt-20 flex items-center bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <h1 className="text-5xl lg:text-6xl font-bold text-gray-800">
-              Hi, I'm <span className="text-blue-600">{portfolioData.personalInfo.name}</span>
-            </h1>
-            <div className="text-2xl lg:text-3xl text-gray-600 h-12">
-              <span className="inline-block animate-pulse">
-                {titles[currentTitle]}
-              </span>
+          <div className="space-y-8 animate-in slide-in-from-left duration-700 fade-in">
+            <div className="space-y-4">
+              <Badge variant="secondary" className="px-3 py-1 text-sm bg-blue-100 text-blue-700 hover:bg-blue-200">
+                <Sparkles className="w-3 h-3 mr-1 inline" /> Available for opportunities
+              </Badge>
+              <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight text-gray-900">
+                Hi, I'm <br />
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                  {name}
+                </span>
+              </h1>
+              <h2 className="text-2xl lg:text-3xl text-gray-600 font-medium h-12 flex items-center">
+                {title}
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
+                {about}
+              </p>
             </div>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              {portfolioData.personalInfo.about}
-            </p>
-            <div className="flex space-x-4">
-              <button
+
+            <div className="flex flex-wrap gap-4">
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20"
                 onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
-                Get In Touch
-              </button>
-              <button
+                <Mail className="mr-2 h-4 w-4" /> Get In Touch
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-blue-200 hover:bg-blue-50 text-blue-700"
                 onClick={() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })}
-                className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-200"
               >
-                View My Work
-              </button>
+                <Briefcase className="mr-2 h-4 w-4" /> View Projects
+              </Button>
+              {linkedin && (
+                <Button size="lg" variant="ghost" asChild>
+                  <a href={`https://${linkedin}`} target="_blank" rel="noreferrer">
+                    <Linkedin className="h-5 w-5 text-blue-700" />
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
-          <div className="flex justify-center">
-            <div className="relative">
-              <div className="w-80 h-80 rounded-full overflow-hidden shadow-2xl">
+
+          <div className="flex justify-center lg:justify-end animate-in slide-in-from-right duration-700 fade-in">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+              <div className="relative w-80 h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-8 border-white shadow-2xl">
                 <img
-                  src={portfolioData.personalInfo.image}
-                  alt={portfolioData.personalInfo.name}
-                  className="w-full h-full object-cover"
+                  src={image}
+                  alt={name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl">✨</span>
-              </div>
             </div>
           </div>
         </div>
@@ -115,34 +167,46 @@ const HeroSection = () => {
   )
 }
 
-// Education Section Component
 const EducationSection = () => {
   return (
-    <section id="education" className="py-20 bg-white">
+    <section id="education" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Education</h2>
-          <p className="text-lg text-gray-600">My academic journey and achievements</p>
+        <div className="text-center mb-16 space-y-4">
+          <Badge variant="outline" className="border-blue-200 text-blue-700">Academic Journey</Badge>
+          <h2 className="text-4xl font-bold text-gray-900">Education</h2>
+          <Separator className="w-20 mx-auto bg-blue-600 h-1 rounded-full" />
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {portfolioData.education.map((edu) => (
-            <div key={edu.id} className="bg-gray-50 rounded-xl p-8 hover:shadow-lg transition-shadow duration-300">
-              <div className="flex items-start space-x-6">
-                <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-                  <img src={edu.logo} alt={edu.institute} className="w-full h-full object-FIT" />
+            <Card key={edu.id} className="hover:shadow-xl transition-all duration-300 border-gray-100 overflow-hidden group">
+              <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-purple-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+              <CardHeader className="flex flex-row items-center space-x-4 pb-2">
+                <Avatar className="h-16 w-16 border-2 border-gray-100">
+                  <AvatarImage src={edu.logo} alt={edu.institute} className="object-cover" />
+                  <AvatarFallback><GraduationCap className="h-8 w-8 text-gray-400" /></AvatarFallback>
+                </Avatar>
+                <div>
+                  <CardTitle className="text-lg font-bold text-gray-800">{edu.institute}</CardTitle>
+                  <CardDescription className="text-blue-600 font-medium">{edu.degree}</CardDescription>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{edu.institute}</h3>
-                  <p className="text-lg text-blue-600 font-medium mb-1">{edu.degree}</p>
-                  <p className="text-gray-600 mb-2">{edu.stream}</p>
-                  <p className="text-sm text-gray-500 mb-3">{edu.duration}</p>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">CGPA/Percentage:</span>
-                    <span className="font-semibold text-green-600">{edu.cgpa}</span>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center text-gray-500">
+                    <MapPin className="h-4 w-4 mr-2" /> {edu.location}
+                  </div>
+                  <div className="font-semibold text-gray-900 border-l-2 border-blue-500 pl-3">
+                    {edu.duration}
+                  </div>
+                  <div className="pt-2">
+                    <Badge variant="secondary" className="text-green-700 bg-green-50 hover:bg-green-100">
+                      {edu.cgpa}
+                    </Badge>
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
@@ -150,45 +214,51 @@ const EducationSection = () => {
   )
 }
 
-// Experience Section Component
 const ExperienceSection = () => {
   return (
-    <section id="experience" className="py-20 bg-gray-50">
+    <section id="experience" className="py-24 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Experience</h2>
-          <p className="text-lg text-gray-600">My professional journey and achievements</p>
+        <div className="text-center mb-16 space-y-4">
+          <Badge variant="outline" className="border-blue-200 text-blue-700">Work History</Badge>
+          <h2 className="text-4xl font-bold text-gray-900">Experience</h2>
+          <Separator className="w-20 mx-auto bg-blue-600 h-1 rounded-full" />
         </div>
-        <div className="space-y-8">
+
+        <div className="space-y-8 max-w-4xl mx-auto">
           {portfolioData.experience.map((exp) => (
-            <div key={exp.id} className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="flex items-start space-x-6">
-                <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-                  <img src={exp.logo} alt={exp.company} className="w-full h-full object-cover" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <div>
-                      <h3 className="text-2xl font-semibold text-gray-800">{exp.role}</h3>
-                      <p className="text-lg text-blue-600 font-medium">{exp.company}</p>
+            <Card key={exp.id} className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <CardHeader>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-3 bg-blue-50 rounded-lg">
+                      <Briefcase className="h-6 w-6 text-blue-600" />
                     </div>
-                    <div className="text-sm text-gray-500 mt-2 md:mt-0">
-                      {exp.startDate} - {exp.endDate}
-                      <br />
-                      <span className="text-blue-600">{exp.location}</span>
+                    <div>
+                      <CardTitle className="text-xl font-bold text-gray-900">{exp.role}</CardTitle>
+                      <CardDescription className="text-lg text-blue-600 font-medium font-sans">{exp.company}</CardDescription>
                     </div>
                   </div>
-                  <ul className="space-y-2">
-                    {exp.description.map((item, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <span className="text-blue-600 mt-1">•</span>
-                        <span className="text-gray-600">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="text-right">
+                    <Badge variant="outline" className="text-sm py-1 px-3 border-gray-300">
+                      {exp.startDate} - {exp.endDate}
+                    </Badge>
+                    <div className="text-sm text-gray-500 mt-2 flex items-center justify-end">
+                      <MapPin className="h-3 w-3 mr-1" /> {exp.location}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {exp.description.map((item, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mt-2 mr-3 flex-shrink-0"></span>
+                      <span className="text-gray-600 leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
@@ -196,44 +266,50 @@ const ExperienceSection = () => {
   )
 }
 
-// Projects Section Component
 const ProjectsSection = () => {
   return (
-    <section id="projects" className="py-20 bg-white">
+    <section id="projects" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Projects</h2>
-          <p className="text-lg text-gray-600">Some of my recent work and creative projects</p>
+        <div className="text-center mb-16 space-y-4">
+          <Badge variant="outline" className="border-blue-200 text-blue-700">Portfolio</Badge>
+          <h2 className="text-4xl font-bold text-gray-900">Featured Projects</h2>
+          <Separator className="w-20 mx-auto bg-blue-600 h-1 rounded-full" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
           {portfolioData.projects.map((project) => (
-            <div key={project.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <div className="h-48 overflow-hidden">
-                <img src={project.image} alt={project.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            <Card key={project.id} className="overflow-hidden border-gray-200 hover:border-blue-300 hover:shadow-2xl transition-all duration-300 flex flex-col h-full group">
+              <div className="relative h-56 overflow-hidden">
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
+                  <Button variant="secondary" className="gap-2" asChild>
+                    <a href={project.link} target="_blank" rel="noreferrer">
+                      View Project <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
+                <img src={project.image} alt={project.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{project.name}</h3>
-                <p className="text-gray-600 mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{project.name}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="text-gray-600 mb-6">{project.description}</p>
+                <div className="flex flex-wrap gap-2">
                   {project.technologies.map((tech, index) => (
-                    <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                    <Badge key={index} variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200">
                       {tech}
-                    </span>
+                    </Badge>
                   ))}
                 </div>
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
-                >
-                  View Project
-                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              </div>
-            </div>
+              </CardContent>
+              <CardFooter className="pt-0">
+                <Button variant="link" className="px-0 text-blue-600" asChild>
+                  <a href={project.link} target="_blank" rel="noreferrer">
+                    View Details <ExternalLink className="ml-1 h-3 w-3" />
+                  </a>
+                </Button>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       </div>
@@ -241,65 +317,50 @@ const ProjectsSection = () => {
   )
 }
 
-// Skills Section Component
 const SkillsSection = () => {
+
+  // Group skills for rendering
+  const skillCategories = [
+    { title: "Core Design Skills", skills: portfolioData.skills.coreSkills, icon: <PenTool className="h-5 w-5 text-purple-500" /> },
+    { title: "Technical Proficiency", skills: portfolioData.skills.technical, icon: <Code2 className="h-5 w-5 text-blue-500" /> },
+    { title: "Tools & Software", skills: portfolioData.skills.tools, icon: <Briefcase className="h-5 w-5 text-green-500" /> },
+    { title: "Soft Skills", skills: portfolioData.skills.softSkills, icon: <Sparkles className="h-5 w-5 text-orange-500" /> },
+    { title: "Other Skills", skills: portfolioData.skills.otherSkills, icon: <Code2 className="h-5 w-5 text-gray-500" /> },
+  ];
+
   return (
-    <section id="skills" className="py-20 bg-gray-50">
+    <section id="skills" className="py-24 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Skills</h2>
-          <p className="text-lg text-gray-600">My expertise and capabilities</p>
+        <div className="text-center mb-16 space-y-4">
+          <Badge variant="outline" className="border-blue-200 text-blue-700">Competencies</Badge>
+          <h2 className="text-4xl font-bold text-gray-900">Skills & Expertise</h2>
+          <Separator className="w-20 mx-auto bg-blue-600 h-1 rounded-full" />
         </div>
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Category</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Skills</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-blue-600">Core Skills</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {portfolioData.skills.coreSkills.join(', ')}
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-blue-600">Technical</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {portfolioData.skills.technical.join(', ')}
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-blue-600">Tools</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {portfolioData.skills.tools.join(', ')}
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-blue-600">Soft Skills</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {portfolioData.skills.softSkills.join(', ')}
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-blue-600">Other Skills</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {portfolioData.skills.otherSkills.join(', ')}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {skillCategories.map((cat, idx) => (
+            <Card key={idx} className="hover:shadow-lg transition-shadow duration-300">
+              <CardHeader className="flex flex-row items-center space-x-3 pb-3">
+                {cat.icon}
+                <CardTitle className="text-lg font-bold text-gray-800">{cat.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {cat.skills.map((skill, index) => (
+                    <Badge key={index} variant="secondary" className="text-sm font-normal bg-white border border-gray-200 text-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </section>
   )
 }
 
-// Contact Section Component
 const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -308,7 +369,6 @@ const ContactSection = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [toast, setToast] = useState(null)
-  const [inlineMessage, setInlineMessage] = useState(null)
 
   useEffect(() => {
     // Initialize EmailJS
@@ -320,10 +380,6 @@ const ContactSection = () => {
       ...formData,
       [e.target.name]: e.target.value
     })
-    // Clear inline message when user starts typing
-    if (inlineMessage) {
-      setInlineMessage(null)
-    }
   }
 
   const showToast = (message, type) => {
@@ -334,24 +390,12 @@ const ContactSection = () => {
     setToast(null)
   }
 
-  const showInlineMessage = (message, type) => {
-    setInlineMessage({ message, type })
-  }
-
-  const hideInlineMessage = () => {
-    setInlineMessage(null)
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    hideInlineMessage()
 
     try {
-      // Prepare template parameters
       const templateParams = getTemplateParams(formData)
-
-      // Send email using EmailJS
       const response = await emailjs.send(
         EMAILJS_CONFIG.SERVICE_ID,
         EMAILJS_CONFIG.TEMPLATE_ID,
@@ -360,7 +404,6 @@ const ContactSection = () => {
       )
 
       if (response.status === 200) {
-        // Success
         showToast('Message submitted successfully. Aditi will contact you soon.', 'success')
         setFormData({ name: '', email: '', message: '' })
       } else {
@@ -375,101 +418,112 @@ const ContactSection = () => {
   }
 
   return (
-    <section id="contact" className="py-20 bg-white">
+    <section id="contact" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Connect With Me</h2>
-          <p className="text-lg text-gray-600">Let's work together on your next project</p>
-        </div>
-        <div className="max-w-2xl mx-auto">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <Badge variant="outline" className="border-blue-200 text-blue-700">Contact</Badge>
+              <h2 className="text-4xl font-bold text-gray-900">Let's Work Together</h2>
+              <p className="text-gray-600 text-lg leading-relaxed">
+                I'm interested in freelance opportunities and open for internship or full-time roles. However, if you have other request or question, don't hesitate to use the form.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <Card className="border-none shadow-md bg-slate-50">
+                <CardContent className="flex items-center space-x-4 p-6">
+                  <div className="bg-white p-3 rounded-full shadow-sm">
+                    <Mail className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <a href={`mailto:${portfolioData.personalInfo.email}`} className="text-lg font-medium text-gray-900 hover:text-blue-600">
+                      {portfolioData.personalInfo.email}
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border-none shadow-md bg-slate-50">
+                <CardContent className="flex items-center space-x-4 p-6">
+                  <div className="bg-white p-3 rounded-full shadow-sm">
+                    <Phone className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Phone</p>
+                    <a href={`tel:${portfolioData.personalInfo.phone}`} className="text-lg font-medium text-gray-900 hover:text-blue-600">
+                      {portfolioData.personalInfo.phone}
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  placeholder="Your Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                  className="bg-slate-50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="your.email@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                  className="bg-slate-50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="message">Message</Label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  placeholder="Tell me about your project..."
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                  className="min-h-[150px] bg-slate-50"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6"
                 disabled={isSubmitting}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                placeholder="Your Name"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                disabled={isSubmitting}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                placeholder="your.email@example.com"
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                disabled={isSubmitting}
-                rows={5}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                placeholder="Tell me about your project..."
-              />
-            </div>
-            
-            {/* Inline Message */}
-            <InlineMessage 
-              message={inlineMessage?.message} 
-              type={inlineMessage?.type} 
-              show={!!inlineMessage} 
-            />
-            
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-            >
-              {isSubmitting ? (
-                <>
-                  <LoadingSpinner size="sm" />
-                  <span>Sending...</span>
-                </>
-              ) : (
-                <span>Send Message</span>
-              )}
-            </button>
-          </form>
-          <div className="mt-12 text-center">
-            <div className="flex justify-center space-x-8">
-              <a href={`mailto:${portfolioData.personalInfo.email}`} className="text-gray-600 hover:text-blue-600 transition-colors">
-                <span className="sr-only">Email</span>
-                📧 {portfolioData.personalInfo.email}
-              </a>
-              <a href={`tel:${portfolioData.personalInfo.phone}`} className="text-gray-600 hover:text-blue-600 transition-colors">
-                <span className="sr-only">Phone</span>
-                📱 {portfolioData.personalInfo.phone}
-              </a>
-            </div>
+              >
+                {isSubmitting ? (
+                  <>
+                    <LoadingSpinner size="sm" />
+                    <span className="ml-2">Sending...</span>
+                  </>
+                ) : (
+                  <>
+                    Send Message <Send className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </form>
           </div>
         </div>
       </div>
-      
-      {/* Toast Notification */}
+
       {toast && (
         <Toast
           message={toast.message}
@@ -481,17 +535,35 @@ const ContactSection = () => {
   )
 }
 
-// Main App Component
+const Footer = () => {
+  return (
+    <footer className="bg-gray-900 text-white py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="mb-4 md:mb-0">
+          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+            {portfolioData.personalInfo.name}
+          </span>
+          <p className="text-gray-400 text-sm mt-2">© {new Date().getFullYear()} All rights reserved.</p>
+        </div>
+        <div className="flex space-x-6">
+          {/* Add social links here if needed */}
+        </div>
+      </div>
+    </footer>
+  )
+}
+
 function App() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white font-sans text-gray-900">
       <Navbar />
       <HeroSection />
       <EducationSection />
       <ExperienceSection />
-      <ProjectsSection />
       <SkillsSection />
+      <ProjectsSection />
       <ContactSection />
+      <Footer />
     </div>
   )
 }
