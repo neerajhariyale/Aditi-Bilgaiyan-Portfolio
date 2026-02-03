@@ -279,7 +279,7 @@ const ProjectsSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
           {portfolioData.projects.map((project) => (
             <Card key={project.id} className="overflow-hidden border-gray-200 hover:border-blue-300 hover:shadow-2xl transition-all duration-300 flex flex-col h-full group">
-              <div className="relative h-56 overflow-hidden">
+              <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
                   <Button variant="secondary" className="gap-2" asChild>
                     <a href={project.link} target="_blank" rel="noreferrer">
@@ -287,7 +287,7 @@ const ProjectsSection = () => {
                     </a>
                   </Button>
                 </div>
-                <img src={project.image} alt={project.name} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                <img src={project.image} alt={project.name} className="w-full h-full object-contain sm:object-cover transform group-hover:scale-110 transition-transform duration-500" />
               </div>
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{project.name}</CardTitle>
