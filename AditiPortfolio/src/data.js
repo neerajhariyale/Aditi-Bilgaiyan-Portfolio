@@ -4,13 +4,14 @@ import cleaningLandingPage from "./assets/cleaning-landing-page.png"
 import EducationLandingPage from "./assets/education-landing-page.png"
 import DigitalAgencyLandingPage from "./assets/digital-agency-page.png"
 import RazorPayCloneLandingPage from "./assets/digital-agency-page.png"
+import AditiImage from '@/assets/cropped_circle_image.png'
 
 export const portfolioData = {
   personalInfo: {
     name: "Aditi Bilgaiyan",
     title: "Graphic Designer & UI/UX Enthusiast",
     about: "Creative and detail-oriented Graphic Designer seeking to deliver impactful visual solutions through innovative design and branding. Experienced in creating social media creatives, banners, and marketing visuals.",
-    image: aditiImage,
+    image: AditiImage,
     email: "bilgaiyanaditi805@gmail.com",
     phone: "+91 8305629699",
     linkedin: "linkedin.com/in/aditibilgaiyan",
