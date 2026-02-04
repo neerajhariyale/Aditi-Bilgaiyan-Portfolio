@@ -73,14 +73,6 @@ export const portfolioData = {
       technologies: ["Figma", "Auto-Layout", "Effect", "Typography"],
       link: "https://www.figma.com/design/LVTLgdBeKSaNC2I7i5OmnI/Aditi-Ui-Ux-Portfolio?node-id=404-3218&t=l1Y5z7h2VDPud0Qf-0"
     },
-    {
-      id: 3,
-      name: "Razorpay Clone",
-      description: "Clone of the Razorpay landing page using HTML, CSS and Tailwind CSS, featuring responsive design and database integration.",
-      image: RazorPayCloneLandingPage,
-      technologies: ["HTML", "CSS", "Javascript", "Tailwind CSS", "MySQL"],
-      link: "https://www.figma.com/design/LVTLgdBeKSaNC2I7i5OmnI/Aditi-Ui-Ux-Portfolio?node-id=439-56&t=l1Y5z7h2VDPud0Qf-0"
-    }
   ],
 
   skills: {
